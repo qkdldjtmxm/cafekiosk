@@ -1,0 +1,420 @@
+/* =========================================================
+   Jazz Cafe 주문 키오스크 — 스타일 (css/style.css) [학생 제공용]
+
+   ★ TODO 로 표시된 곳은 이번 시간에 새로 배우는 CSS 입니다. 직접 작성해 보세요.
+
+     1. 색 변수 / 기본 설정
+     2. 전체 레이아웃 (왼쪽 메뉴 / 오른쪽 주문 내역)
+     3. 카테고리 탭
+     4. 메뉴 카드
+     5. 주문 내역 패널 (매장/포장, 장바구니, 합계, 버튼)
+     6. 주문 완료 창 (모달)
+     7. 모바일 (@media)
+   ========================================================= */
+
+/* =========================================================
+   1. 색 변수 / 기본 설정
+   ========================================================= */
+:root {
+    --coffee: #5b3a29;        /* 진한 커피색 */
+    --coffee-light: #8a5a3c;
+    --cream: #fbf5ec;         /* 바탕 */
+    --card: #ffffff;
+    --line: #eadfce;
+    --accent: #e8743b;        /* 포인트(주문 버튼) */
+    --accent-dark: #c95d28;
+    --red: #d9534f;
+    --grey: #6b6258;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 112.5%; }
+
+body {
+    background: var(--cream);
+    color: #2f2620;
+    font-family: "Noto Sans KR", sans-serif;
+    min-height: 100vh;
+}
+
+button {
+    font-family: inherit;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: inherit;
+}
+
+/* =========================================================
+   2. 전체 레이아웃: 왼쪽 메뉴 / 오른쪽 주문 내역
+   ========================================================= */
+.kiosk {
+    display: grid;
+    grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
+    gap: 1.2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.2rem;
+}
+
+.menu-area {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 1.4rem;
+    box-shadow: 0 8px 24px rgba(91, 58, 41, .12);
+}
+
+/* 머리글 */
+.kiosk-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 1.1rem;
+}
+
+.kiosk-header h1 {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: var(--coffee);
+}
+
+.kiosk-header p {
+    color: var(--grey);
+    font-size: .85rem;
+}
+
+/* =========================================================
+   3. 카테고리 탭
+   ========================================================= */
+.tabs {
+    display: flex;
+    gap: .5rem;
+    margin-bottom: 1.1rem;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: .8rem 0;
+    border-radius: 12px;
+    background: #f3ebde;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--coffee-light);
+    transition: background .2s, color .2s;
+}
+
+.tab-btn:hover { background: #ecdfca; }
+
+.tab-btn.active {
+    background: var(--coffee);
+    color: #fff;
+}
+
+/* =========================================================
+   4. 메뉴 카드
+   ========================================================= */
+.menu-grid {
+    display: grid;
+    /* ★ TODO 1: 카드가 화면 폭에 맞춰 자동으로 채워지는 칸 만들기 (grid-template-columns) */
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: .9rem;
+}
+
+.menu-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .25rem;
+    padding: 1.1rem .6rem 1rem;
+    border: 2px solid var(--line);
+    border-radius: 16px;
+    background: #fffdf9;
+    transition: transform .15s, border-color .15s, box-shadow .15s;
+}
+
+.menu-card:hover {
+    /* ★ TODO 2-1: 마우스를 올리면 위로 3px 떠오르게 하기 (transform) */
+    transform: translateY(-3px);
+    border-color: var(--coffee-light);
+    box-shadow: 0 6px 14px rgba(91, 58, 41, .15);
+}
+
+/* ★ TODO 2-2: 누르고 있는 순간 97% 크기로 줄어들게 하기 (.menu-card:active) */
+.menu-card:active { 
+    transform: scale(.97); 
+}
+
+.menu-icon { font-size: 2.6rem; line-height: 1.2; }
+.menu-name { font-weight: 700; font-size: 1rem; }
+.menu-price { color: var(--accent-dark); font-weight: 700; font-size: .95rem; }
+
+/* =========================================================
+   5. 주문 내역 패널
+   ========================================================= */
+.order-area {
+    display: flex;
+    flex-direction: column;
+    background: var(--coffee);
+    color: #fff;
+    border-radius: 20px;
+    padding: 1.4rem;
+    box-shadow: 0 8px 24px rgba(91, 58, 41, .25);
+    /* ★ TODO 3: 스크롤해도 화면 위쪽에 붙어서 따라오게 하기 (position, top, align-self) */
+    position: sticky;
+    top: 1.2rem;
+    align-self: start;
+    /* ★ TODO 4-1: 패널의 최대 높이를 "화면 높이 − 2.4rem"으로 제한하기 (max-height) */
+    max-height: calc(100vh - 2.4rem);
+}
+
+.order-title {
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin-bottom: .8rem;
+}
+
+/* 매장 / 포장 선택 */
+.place-row {
+    display: flex;
+    gap: .4rem;
+    margin-bottom: .9rem;
+}
+
+.place-btn {
+    flex: 1;
+    padding: .55rem 0;
+    border-radius: 10px;
+    border: 2px solid rgba(255, 255, 255, .35);
+    font-weight: 700;
+    font-size: .95rem;
+    color: rgba(255, 255, 255, .8);
+    transition: .2s;
+}
+
+.place-btn.active {
+    background: #fff;
+    color: var(--coffee);
+    border-color: #fff;
+}
+
+/* 장바구니 목록 */
+.cart-list {
+    list-style: none;
+    /* ★ TODO 4-2: 내용이 넘치면 세로 스크롤바가 생기게 하기 (overflow-y) */
+    overflow-y: auto;
+    min-height: 120px;
+    flex: 1;
+    margin-bottom: .8rem;
+}
+
+.cart-item {
+    /* ★ TODO 5: 왼쪽은 남는 공간, 오른쪽은 내용 크기만큼인 2칸 grid 만들기 (display, grid-template-columns, gap) */
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: .25rem .6rem;
+    align-items: center;
+    padding: .7rem .2rem;
+    border-bottom: 1px dashed rgba(255, 255, 255, .28);
+}
+
+.cart-name { font-weight: 700; }
+.cart-sum { font-weight: 700; text-align: right; }
+
+.qty-box {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.qty-btn {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .18);
+    font-size: 1.15rem;
+    font-weight: 700;
+    transition: background .2s;
+}
+
+.qty-btn:hover { background: rgba(255, 255, 255, .35); }
+
+.qty-num { min-width: 1.4rem; text-align: center; font-weight: 700; }
+
+.remove-btn {
+    justify-self: end;
+    padding: .25rem .6rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, .5);
+    font-size: .8rem;
+    transition: .2s;
+}
+
+.remove-btn:hover { background: var(--red); border-color: var(--red); }
+
+.empty-msg {
+    display: none;
+    text-align: center;
+    padding: 2.2rem 0;
+    color: rgba(255, 255, 255, .65);
+    line-height: 1.6;
+}
+
+.empty-msg.show { display: block; }
+
+/* 합계 */
+.total-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: .9rem 0 .2rem;
+    border-top: 2px solid rgba(255, 255, 255, .5);
+}
+
+.total-label { font-size: 1rem; }
+.total-price { font-size: 1.7rem; font-weight: 800; }
+.total-count { text-align: right; font-size: .85rem; color: rgba(255, 255, 255, .7); margin-bottom: .8rem; }
+
+.btn-row { display: flex; gap: .5rem; }
+
+.clear-btn {
+    flex: 1;
+    padding: .95rem 0;
+    border-radius: 12px;
+    border: 2px solid rgba(255, 255, 255, .5);
+    font-size: 1rem;
+    font-weight: 700;
+    transition: .2s;
+}
+
+.clear-btn:hover { background: rgba(255, 255, 255, .15); }
+
+.order-btn {
+    flex: 2;
+    padding: .95rem 0;
+    border-radius: 12px;
+    background: var(--accent);
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #fff;
+    transition: background .2s;
+}
+
+.order-btn:hover { background: var(--accent-dark); }
+
+/* ★ TODO 6: 누를 수 없는 버튼 모양 만들기 (.order-btn:disabled, .clear-btn:disabled) */
+.order-btn:disabled { 
+    background: #a99a8d;
+    cursor: not-allowed;
+}
+
+.clear-btn:disabled { 
+    opacity: .4;
+    cursor: not-allowed;
+}
+
+/* =========================================================
+   6. 주문 완료 창 (모달)
+   ========================================================= */
+.modal {
+    /* ★ TODO 7-1: 화면 전체를 덮도록 고정하기 (position, inset) */
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(30, 20, 12, .6);
+    padding: 1rem;
+    position: fixed;
+    inset: 0;
+    /* ★ TODO 7-2: 다른 요소보다 위에 오게 하기 (z-index) */
+    z-index: 999;
+}
+
+.modal.show { display: flex; }
+
+.modal-box {
+    width: 100%;
+    max-width: 420px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 22px;
+    padding: 2rem 1.6rem 1.6rem;
+    text-align: center;
+    /* ★ TODO 8-1: pop 애니메이션 연결하기 (animation) */
+    animation: pop .5s ease-out;
+}
+
+/* ★ TODO 8-2: @keyframes pop 만들기 (작고 투명한 상태 → 원래 크기) */
+@keyframes pop {
+    from {
+        transform: scale(.85);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.modal-icon { font-size: 3rem; }
+.modal-box h2 { color: var(--coffee); margin: .3rem 0 .2rem; font-size: 1.4rem; }
+.modal-place { color: var(--grey); font-size: .9rem; margin-bottom: .8rem; }
+
+.modal-number {
+    display: inline-block;
+    min-width: 7rem;
+    padding: .5rem 1.4rem;
+    margin-bottom: 1rem;
+    border-radius: 16px;
+    background: var(--cream);
+    color: var(--accent-dark);
+    font-size: 2.6rem;
+    font-weight: 800;
+    letter-spacing: .05em;
+}
+
+.receipt {
+    list-style: none;
+    text-align: left;
+    margin-bottom: .8rem;
+    padding: .8rem 1rem;
+    border-radius: 12px;
+    background: #faf6ef;
+    font-size: .92rem;
+}
+
+.receipt li {
+    display: flex;
+    justify-content: space-between;
+    padding: .2rem 0;
+}
+
+.modal-total { font-weight: 800; font-size: 1.15rem; margin-bottom: 1.1rem; }
+
+.modal-close {
+    width: 100%;
+    padding: .9rem 0;
+    border-radius: 12px;
+    background: var(--coffee);
+    color: #fff;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.modal-close:hover { background: var(--coffee-light); }
+
+/* =========================================================
+   7. 모바일 (화면 폭 860px 이하): 위·아래 한 줄씩
+   ========================================================= */
+@media (max-width: 860px) {
+    .kiosk { grid-template-columns: minmax(0, 1fr); padding: .8rem; }
+    /* ★ TODO 9: 모바일에서는 따라다니는 패널을 해제하기 (.order-area 의 position, max-height 되돌리기) */
+    .order-area {
+        position: static;
+        max-height: none;
+    }
+    .kiosk-header { 
+        flex-direction: column; 
+        gap: .2rem; 
+    }
+}
